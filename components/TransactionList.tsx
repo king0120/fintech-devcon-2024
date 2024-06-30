@@ -1,15 +1,15 @@
 import {alias} from "drizzle-orm/sqlite-core";
 import {companies, transactions} from "@/db/schema";
 import {db} from "@/db";
-import {eq} from "drizzle-orm";
+import {desc, eq} from "drizzle-orm";
 import {cn} from "@/lib/utils";
 import {TransactionProps} from "@/lib/types";
 import {Badge} from "./ui/badge";
 import {CalendarDaysIcon} from "@/components/icons/CalendarDaysIcon";
-import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {formatDate, formatMoney} from "@/utils";
 import {CreateTransactionButton} from "@/components/CreateTransaction";
+import {ScrollArea} from "@/components/ui/scroll-area";
 
 export const TransactionList = async ({transactionId}: TransactionProps) => {
     const payer = alias(companies, 'payer')
@@ -17,14 +17,15 @@ export const TransactionList = async ({transactionId}: TransactionProps) => {
     const allTransactions = await db.select().from(transactions)
         .leftJoin(payer, eq(transactions.payeeId, payer.id))
         .leftJoin(payee, eq(transactions.payerId, payee.id))
+        .orderBy(desc(transactions.id))
     return (
-        <aside className="bg-muted/40 border-r px-4 py-6 flex flex-col gap-4">
+        <aside className="min-h-screen w-1/4 bg-muted/40 border-r px-4 py-6 flex flex-col gap-4">
             <CreateTransactionButton/>
             <div className="flex items-center gap-2">
                 <CalendarDaysIcon className="h-4 w-4 text-muted-foreground"/>
                 <span className="text-sm font-medium">Recent Transactions</span>
             </div>
-            <div className="flex flex-col gap-2">
+            <ScrollArea className="flex flex-col gap-2 max-h-[500px]">
                 {allTransactions.map(transaction => {
                     const isActive = transactionId && transaction.transactions.id === transactionId
                     const activeClasses = `bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground`
@@ -36,7 +37,7 @@ export const TransactionList = async ({transactionId}: TransactionProps) => {
                                     className="font-medium">#{transaction.transactions.id} - {formatMoney(transaction.transactions.amount)}</div>
                                 <div
                                     className={cn("text-xs text-muted-foreground", isActive && 'text-primary-foreground/80')}>
-                                    {formatDate(new Date(transaction.transactions.dateCompleted))}
+                                    {transaction.transactions.dateCompleted ? formatDate(new Date(transaction.transactions.dateCompleted)) : 'Pending'}
                                 </div>
                             </div>
                             <Badge variant={isActive ? 'outline' : "secondary"}
@@ -47,10 +48,7 @@ export const TransactionList = async ({transactionId}: TransactionProps) => {
                         </Link>
                     )
                 })}
-            </div>
-            <div className="mt-auto">
-                <Button className="w-full">New Transaction</Button>
-            </div>
+            </ScrollArea>
         </aside>
     )
 }

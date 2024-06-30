@@ -8,9 +8,7 @@ export default function Home({searchParams}: { searchParams: Record<string, stri
     const transactionId = Number(searchParams.transaction)
     return (
         <section className="flex">
-            <div className={'border-r-grey-100 h-screen w-1/4 overflow-y-scroll'}>
-                <TransactionList transactionId={transactionId}/>
-            </div>
+            <TransactionList transactionId={transactionId}/>
             <div className={'bg-grey-200 min-h-screen w-3/4'}>
 
                 <Suspense key={transactionId} fallback={<div>Loading...</div>}>
