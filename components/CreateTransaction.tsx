@@ -1,6 +1,7 @@
 import {Button} from "@/components/ui/button";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -11,31 +12,36 @@ import {
 import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Input} from "@/components/ui/input";
+import {db} from "@/db";
+import {companies, transactions} from "@/db/schema";
+import {redirect} from "next/navigation";
 
 export const CreateTransactionButton = async () => {
+    const accounts = await db.select().from(companies)
+    console.log(accounts)
     const handleSubmit = async (formData: FormData) => {
         'use server'
         console.log({formData})
         // parser form data
         const sourceAccount = formData.get('source-account') as string
         const destinationAccount = formData.get('destination-account') as string
+        const description = formData.get('description') as string
         const amount = formData.get('amount') as string
-        const date = formData.get('date') as string
-        console.log({sourceAccount, destinationAccount, amount, date})
+        const facilitatorFee = formData.get('facilitatorFee') as string
         // create transaction
-        // const newTransactions = await db.insert(transactions).values({
-
-        // const newTransactions = await db.insert(transactions).values({
-        //         payerId: 1,
-        //         payeeId: 2,
-        //         amount: 1000,
-        //         status: 'pending',
-        //         date: new Date().toISOString()
-        //     }
-        // ).returning()
-        // const newTransaction = newTransactions[0]
-        // // NextJS Specific
-        // redirect('/?transaction=' + newTransaction.id)
+        const newTransactions = await db.insert(transactions).values({
+                payerId: Number(sourceAccount),
+                payeeId: Number(destinationAccount),
+                description: description ?? 'No description',
+                amount: Number(amount),
+                facilitatorFee: Number(facilitatorFee),
+                status: 'pending',
+                dateInitiated: new Date().toISOString(),
+            }
+        ).returning()
+        const newTransaction = newTransactions[0]
+        // NextJS Specific
+        redirect('/?transaction=' + newTransaction.id)
     }
     return (
         <Dialog>
@@ -49,7 +55,14 @@ export const CreateTransactionButton = async () => {
                         <DialogDescription>Enter the details of your new transaction.</DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
-                        <div className="grid items-center grid-cols-4 gap-4">
+                        <div className="grid items-center grid-cols-2 gap-4">
+                            <Label htmlFor="amount" className="text-right text-foreground">
+                                Description
+                            </Label>
+                            <Input id="description" name={'description'} placeholder="Enter description"
+                                   className="text-foreground"/>
+                        </div>
+                        <div className="grid items-center grid-cols-2 gap-4">
                             <Label htmlFor="source-account" className="text-right text-foreground">
                                 Source Account
                             </Label>
@@ -58,16 +71,16 @@ export const CreateTransactionButton = async () => {
                                     <SelectValue placeholder="Select account"/>
                                 </SelectTrigger>
                                 <SelectContent className="bg-background text-foreground">
-                                    <SelectItem value="1234 5678 9012" className="text-foreground">
-                                        1234 5678 9012 - Checking
-                                    </SelectItem>
-                                    <SelectItem value="9876 5432 1098" className="text-foreground">
-                                        9876 5432 1098 - Savings
-                                    </SelectItem>
+                                    {accounts.map(account => (
+                                        <SelectItem key={account.id} value={account.id.toString()}
+                                                    className="text-foreground">
+                                            {account.name} - **** **** {account.maskedAccountNumber}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="grid items-center grid-cols-4 gap-4">
+                        <div className="grid items-center grid-cols-2 gap-4">
                             <Label htmlFor="destination-account" className="text-right text-foreground">
                                 Destination Account
                             </Label>
@@ -76,38 +89,41 @@ export const CreateTransactionButton = async () => {
                                     <SelectValue placeholder="Select account"/>
                                 </SelectTrigger>
                                 <SelectContent className="bg-background text-foreground">
-                                    <SelectItem value="9876 5432 1098" className="text-foreground">
-                                        9876 5432 1098 - Savings
-                                    </SelectItem>
-                                    <SelectItem value="1234 5678 9012" className="text-foreground">
-                                        1234 5678 9012 - Checking
-                                    </SelectItem>
+                                    {accounts.map(account => (
+                                        <SelectItem key={account.id} value={account.id.toString()}
+                                                    className="text-foreground">
+                                            {account.name} - **** **** {account.maskedAccountNumber}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="grid items-center grid-cols-4 gap-4">
+                        <div className="grid items-center grid-cols-2 gap-4">
                             <Label htmlFor="amount" className="text-right text-foreground">
                                 Amount
                             </Label>
                             <Input id="amount" name={'amount'} type="number" placeholder="Enter amount"
                                    className="text-foreground"/>
                         </div>
-                        <div className="grid items-center grid-cols-4 gap-4">
-                            <Label htmlFor="date" className="text-right text-foreground">
-                                Date
+                        <div className="grid items-center grid-cols-2 gap-4">
+                            <Label htmlFor="facilitatorFee" className="text-right text-foreground">
+                                Fee
                             </Label>
-                            <Input id="date" name={'date'} type="date" className="text-foreground"/>
+                            <Input id="facilitatorFee" name={'facilitatorFee'} type="number" placeholder="Enter amount"
+                                   className="text-foreground"/>
                         </div>
 
                         <DialogFooter>
-                            <Button type="submit" className="text-foreground">
-                                Save Transaction
-                            </Button>
-                            <div>
+                            <DialogClose>
+                                <Button type="submit" className="text-foreground">
+                                    Save Transaction
+                                </Button>
+                            </DialogClose>
+                            <DialogClose>
                                 <Button variant="outline" type="button" className="text-foreground">
                                     Cancel
                                 </Button>
-                            </div>
+                            </DialogClose>
                         </DialogFooter>
                     </div>
                 </form>

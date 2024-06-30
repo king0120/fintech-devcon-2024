@@ -21,9 +21,8 @@ export const transactions = sqliteTable('transactions', {
     description: text('description').notNull(),
     amount: integer('amount').notNull(),
     facilitatorFee: integer('facilitatorFee').notNull(),
-    numberOfHoldDays: integer('numberOfHoldDays').notNull(),
     status: text('status').notNull(),
     dateInitiated: text('dateInitiated').notNull(),
-    dateCompleted: text('dateCompleted').notNull(),
+    dateCompleted: text('dateCompleted'),
 });
 export type Transaction = Doc<'transactions'>;
