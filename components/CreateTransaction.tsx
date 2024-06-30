@@ -18,10 +18,8 @@ import {redirect} from "next/navigation";
 
 export const CreateTransactionButton = async () => {
     const accounts = await db.select().from(companies)
-    console.log(accounts)
     const handleSubmit = async (formData: FormData) => {
         'use server'
-        console.log({formData})
         // parser form data
         const sourceAccount = formData.get('source-account') as string
         const destinationAccount = formData.get('destination-account') as string
@@ -112,7 +110,6 @@ export const CreateTransactionButton = async () => {
                             <Input id="facilitatorFee" name={'facilitatorFee'} type="number" placeholder="Enter amount"
                                    className="text-foreground"/>
                         </div>
-
                         <DialogFooter>
                             <DialogClose>
                                 <Button type="submit" className="text-foreground">

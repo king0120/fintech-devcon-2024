@@ -8,17 +8,9 @@ import {Button} from "@/components/ui/button";
 import {ArrowLeftIcon} from "@radix-ui/react-icons";
 import {Badge} from "@/components/ui/badge";
 import {LineChart} from "@/components/client/LineChart";
-import {formatDate, formatMoney} from "@/utils";
 
 export const TransactionDetails = async ({transactionId}: TransactionProps) => {
-    // await sleep(6000)
-    const payer = alias(companies, 'payer')
-    const payee = alias(companies, 'payee')
-    // We only want to select the first row
-    const [data] = await db.select().from(transactions)
-        .leftJoin(payer, eq(transactions.payeeId, payer.id))
-        .leftJoin(payee, eq(transactions.payerId, payee.id))
-        .where(eq(transactions.id, transactionId));
+
     return (
         <div className="flex flex-col min-h-screen bg-background">
             <header className="bg-muted/40 px-6 py-4 flex items-center justify-between">
@@ -30,15 +22,14 @@ export const TransactionDetails = async ({transactionId}: TransactionProps) => {
                     <div>
                         <div className="text-sm text-muted-foreground">Transaction</div>
                         <h1 className="font-semibold text-lg">
-                            #{data.transactions.id} - {formatMoney(data.transactions.amount)}
-                            <span
-                                className="font-normal text-muted-foreground"> on {formatDate(new Date(data.transactions.dateInitiated))}</span>
+                            {/* Transaction Id and Amount*/}
+                            <span className="font-normal text-muted-foreground"> on </span> {/* Date of Transaction*/}
                         </h1>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <Badge variant="outline" className="px-3 py-1 text-sm text-primary-foreground">
-                        {data.transactions.status}
+                        {/* Transaction Status */}
                     </Badge>
                 </div>
             </header>
@@ -51,15 +42,15 @@ export const TransactionDetails = async ({transactionId}: TransactionProps) => {
                         <CardContent className="grid gap-2">
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Account Number</span>
-                                <span>**** **** {data.payer?.maskedAccountNumber}</span>
+                                <span>**** **** </span> {/* Masked Account Number */}
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Account Type</span>
-                                <span>{data.payer?.type}</span>
+                                <span></span> {/* Account Type */}
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Balance</span>
-                                <span>{formatMoney(data.payer?.balance as number)}</span>
+                                <span></span> {/* Account Balance */}
                             </div>
                         </CardContent>
                     </Card>
@@ -70,15 +61,15 @@ export const TransactionDetails = async ({transactionId}: TransactionProps) => {
                         <CardContent className="grid gap-2">
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Account Number</span>
-                                <span>**** **** {data.payee?.maskedAccountNumber}</span>
+                                <span>**** **** </span> {/* Masked Account Number */}
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Account Type</span>
-                                <span>{data.payee?.type}</span>
+                                <span></span> {/* Account Type */}
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Balance</span>
-                                <span>{formatMoney(data.payee?.balance as number)}</span>
+                                <span></span> {/* Account Balance */}
                             </div>
                         </CardContent>
                     </Card>
@@ -89,19 +80,19 @@ export const TransactionDetails = async ({transactionId}: TransactionProps) => {
                         <CardContent className="grid gap-2">
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Initiation Date</span>
-                                <span>{formatDate(new Date(data.transactions.dateInitiated))}</span>
+                                <span></span> {/* Date of Transaction */}
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Initiation  Time</span>
-                                <span>{new Date(data.transactions.dateInitiated).toLocaleTimeString()}</span>
+                                <span></span> {/* Time of Transaction */}
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Completion Date</span>
-                                <span>{formatDate(new Date(data.transactions.dateCompleted))}</span>
+                                <span></span> {/* Date of Completion */}
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Completion Time</span>
-                                <span>{new Date(data.transactions.dateCompleted).toLocaleTimeString()}</span>
+                                <span></span> {/* Time of Completion */}
                             </div>
                         </CardContent>
                     </Card>
@@ -114,7 +105,7 @@ export const TransactionDetails = async ({transactionId}: TransactionProps) => {
                         <CardContent className="grid gap-2">
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Transfer Fee</span>
-                                <span>{formatMoney(data.transactions.facilitatorFee)}</span>
+                                <span></span> {/* Transfer Fee */}
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Overdraft Fee</span>
@@ -122,7 +113,7 @@ export const TransactionDetails = async ({transactionId}: TransactionProps) => {
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Total Fees</span>
-                                <span>{formatMoney(data.transactions.facilitatorFee)}</span>
+                                <span></span> {/* Total Fees */}
                             </div>
                         </CardContent>
                     </Card>
@@ -133,15 +124,15 @@ export const TransactionDetails = async ({transactionId}: TransactionProps) => {
                         <CardContent className="grid gap-2">
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Amount</span>
-                                <span className="font-semibold">{formatMoney(data.transactions.amount)}</span>
+                                <span className="font-semibold"></span> {/* Transaction Amount */}
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Fees</span>
-                                <span>{formatMoney(data.transactions.facilitatorFee)}</span>
+                                <span></span> {/* Transaction Fees */}
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Net Amount</span>
-                                <span className="font-semibold">{formatMoney(data.transactions.amount - data.transactions.facilitatorFee)}</span>
+                                <span className="font-semibold"></span> {/* Net Transaction Amount */}
                             </div>
                         </CardContent>
                     </Card>
