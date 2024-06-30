@@ -7,6 +7,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix",
+		"drizzle:init": "pnpm drizzle:push && pnpm drizzle:seed",
+		"drizzle:push": "drizzle-kit push",
 		"drizzle:seed": "pnpx tsx -r tsconfig-paths/register ./db/seed.ts"
 	},
 	"dependencies": {
