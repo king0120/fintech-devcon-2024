@@ -32,8 +32,8 @@ In order to provide checkpoints along the way, this repository is broken up into
 
 ## Other Tools and Libraries
 While this workshop does not cover these tools, the following tools and libraries are used in this application:
-- Tailwind CSS
-- Drizzle ORM
-- SQLite
-- nivo graphs
-- TypeScript
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [SQLite](https://www.sqlite.org/)
+- [nivo charts](https://nivo.rocks/)
+- [TypeScript](https://www.typescriptlang.org/)
