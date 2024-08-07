@@ -11,6 +11,7 @@ import {LineChart} from "@/components/client/LineChart";
 import {formatDate, formatMoney} from "@/utils";
 
 export const TransactionDetails = async ({transactionId}: TransactionProps) => {
+    if (!transactionId) return null
     // await sleep(6000)
     const payer = alias(companies, 'payer')
     const payee = alias(companies, 'payee')
