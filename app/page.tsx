@@ -9,7 +9,7 @@ export default function Home({searchParams}: { searchParams: Record<string, stri
         <section className="flex">
             <TransactionList transactionId={transactionId}/>
             <div className={'bg-grey-200 min-h-screen w-3/4'}>
-                {/*TRANSACTION DETAILS HERE*/}
+                <TransactionDetails transactionId={transactionId}/>
             </div>
         </section>
     );
